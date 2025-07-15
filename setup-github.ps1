@@ -103,9 +103,5 @@ Write-Host "📖 For detailed instructions, see CLOUDFLARE_DEPLOYMENT.txt" -Fore
 # Open the deployment guide
 $openGuide = Read-Host "Open deployment guide? (y/n)"
 if ($openGuide -eq "y" -or $openGuide -eq "Y") {
-    if (Test-Path "CLOUDFLARE_DEPLOYMENT.txt") {
-        Start-Process "CLOUDFLARE_DEPLOYMENT.txt"
-    } else {
-        Write-Host "⚠️  CLOUDFLARE_DEPLOYMENT.txt not found" -ForegroundColor Yellow
-    }
+    Start-Process "CLOUDFLARE_DEPLOYMENT.txt"
 }

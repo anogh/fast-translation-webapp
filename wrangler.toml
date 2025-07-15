@@ -1,6 +1,7 @@
 name = "fast-translation-webapp"
 main = "main.py"
 compatibility_date = "2024-01-15"
+compatibility_flags = ["python_workers"]
 
 [env.production.vars]
 # Environment variables will be set via wrangler secret put command
@@ -8,13 +9,3 @@ compatibility_date = "2024-01-15"
 # PROJECT_ID = "534521643480"
 # LOCATION = "us-central1"
 # GOOGLE_CLOUD_MODEL = "projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba"
-
-[[env.production.routes]]
-pattern = "*"
-zone_name = "your-domain.com"  # Optional: replace with your custom domain
-
-[build]
-command = "pip install -r requirements.txt"
-
-[build.upload]
-format = "service-worker"
