@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Translation Webapp</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="card">
+                    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Fast Translation Webapp</h1>
+                    <div class="flex gap-4 mb-4 justify-center">
+                        <button id="fireMode" class="mode-button">Fire Mode: Off</button>
+                        <button id="aiModeToggle" class="mode-button">AI Mode: Off</button>
+                    </div>
+                    <textarea id="inputText" rows="5" placeholder="Enter text to translate" class="mb-4"></textarea>
+                    <textarea id="originalTranslation" rows="5" readonly placeholder="Original translation" class="mb-4"></textarea>
+                    <div id="finalTranslation" class="mb-4 p-4 border rounded-lg bg-gray-50" style="min-height:100px; overflow-y:auto;"></div>
+                    <button id="copyTranslation" class="w-full primary-button">Copy Translation</button>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">API Settings</h2>
+                    <label for="apiKeyInput" class="block text-sm font-medium text-gray-700 mb-2">Gemini API Key:</label>
+                    <input type="password" id="apiKeyInput" list="apiKeys" placeholder="Enter Gemini API Key" class="mb-4">
+                    <datalist id="apiKeys"></datalist>
+
+                    <label for="modelNameInput" class="block text-sm font-medium text-gray-700 mb-2">Gemini Model Name:</label>
+                    <input type="text" id="modelNameInput" list="modelNames" placeholder="Enter Gemini Model Name" class="mb-4">
+                    <datalist id="modelNames"></datalist>
+
+                    <div class="flex gap-2 mb-4">
+                        <button id="saveSettings" class="flex-grow secondary-button">Save Settings</button>
+                        <button id="loadSettings" class="flex-grow secondary-button">Load Settings</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">Used Dictionary Entries</h2>
+                    <ul id="usedDictionariesList" class="mb-4 p-4 border rounded-lg bg-gray-50" style="min-height:60px; overflow-y:auto;">
+                        <li class="text-gray-500">No dictionary entries used yet.</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">Word Replacement Dictionary</h2>
+                    <div id="wordReplacementList" class="mb-4"></div>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="wordReplacementKey" placeholder="Original word" class="flex-grow">
+                        <input type="text" id="wordReplacementValue" placeholder="Replacement word" class="flex-grow">
+                    </div>
+                    <button onclick="updateDictionary('word_replacement')" class="w-full secondary-button">Add/Update</button>
+                </div>
+                
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">Keyword Based Dictionary</h2>
+                    <div id="keywordBasedList" class="mb-4"></div>
+                    <div class="flex flex-col gap-2 mb-2">
+                        <input type="text" id="keywordBasedKey" placeholder="Original English">
+                        <input type="text" id="keywordBasedOriginal" placeholder="Original Bengali">
+                        <input type="text" id="keywordBasedReplacement" placeholder="Replacement Bengali">
+                    </div>
+                    <button onclick="updateDictionary('keyword_based')" class="w-full secondary-button">Add/Update</button>
+                </div>
+            </div>
+            
+            <div>
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">General Prompt for Gemini</h2>
+                    <textarea id="generalPromptTextarea" rows="4" placeholder="Enter general prompt for Gemini model" class="mb-4">{{ general_prompt }}</textarea>
+                    <button onclick="saveGeneralPrompt()" class="w-full secondary-button">Save General Prompt</button>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">Gemini Keyword Prompts</h2>
+                    <div id="geminiKeywordPromptsList" class="mb-4"></div>
+                    <div class="flex flex-col gap-2 mb-2">
+                        <input type="text" id="geminiKeywordPromptKey" placeholder="Keyword (e.g., 'medical')">
+                        <textarea id="geminiKeywordPromptValue" rows="3" placeholder="Specific prompt for this keyword"></textarea>
+                    </div>
+                    <button onclick="updateDictionary('gemini_keyword_prompts')" class="w-full secondary-button">Add/Update</button>
+                </div>
+
+                <div class="card">
+                    <h2 class="text-xl font-semibold mb-4">Single Word Dictionary</h2>
+                    <div id="singleWordList" class="mb-4"></div>
+                    <div class="flex flex-col gap-2 mb-2">
+                        <input type="text" id="singleWordKey" placeholder="Original word">
+                        <input type="text" id="singleWordValue" placeholder="Replacement word">
+                    </div>
+                    <button onclick="updateDictionary('single_word')" class="w-full secondary-button">Add/Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+🚀 CLOUDFLARE PAGES DEPLOYMENT CONFIGURATION
+=============================================
+
+📋 ENVIRONMENT VARIABLES FOR CLOUDFLARE PAGES:
+==============================================
+
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+GOOGLE_CLOUD_CREDENTIALS=ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiZ2VuLWxhbmctY2xpZW50LTA2OTU0NDMzMDkiLAogICJwcml2YXRlX2tleV9pZCI6ICI4NWEzN2YyYzlmZDY5ZjNhNzNjNzJhNzJjNzE5ZjJjNzJjNzE5ZjJjNyIsCiAgInByaXZhdGVfa2V5IjogIi0tLS0tQkVHSU4gUFJJVkFURSBLRVktLS0tLVxuTUlJRXZRSUJBREFOQmdrcWhraUc5dzBCQVFFRkFBU0NCS2N3Z2dTakFnRUFBb0lCQVFEQXpUd3hRTkNFQWV0dFxuOXVTYjJEbzFQR1o5OGg1WkZuMmFpVG51Vk5SWFZMRjBocUE5Y29SZDNmVHBJaTBzV2RHN25zdzRkN2x5R1d4dlxuT08vU0dTekFXU1U1LzBNVGR0M1hINUl1YkV4Skt4RjJSdzRXZThZbUNhcWdPQUloUHZKelNHSmdqb05JNTVtbVxuaGlxZmZXN1Y3NkVTbFFLVVVha09Sa2VVZ0lma0Z3OD1cbi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS1cbiIsCiAgImNsaWVudF9lbWFpbCI6ICJmb3ItYW1hem9uLXdvcmtAZ2VuLWxhbmctY2xpZW50LTA2OTU0NDMzMDkuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLAogICJjbGllbnRfaWQiOiAiMTAyNDc3NDM3NjA1NjE0MDc4NjEyIiwKICAiYXV0aF91cmkiOiAiaHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29tL28vb2F1dGgyL2F1dGgiLAogICJ0b2tlbl91cmkiOiAiaHR0cHM6Ly9vYXV0aDIuZ29vZ2xlYXBpcy5jb20vdG9rZW4iLAogICJhdXRoX3Byb3ZpZGVyX3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vb2F1dGgyL3YxL2NlcnRzIiwKICAiY2xpZW50X3g1MDlfY2VydF91cmwiOiAiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vcm9ib3QvdjEvbWV0YWRhdGEveDUwOS9mb3ItYW1hem9uLXdvcmslNDBnZW4tbGFuZy1jbGllbnQtMDY5NTQ0MzMwOS5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsCiAgInVuaXZlcnNlX2RvbWFpbiI6ICJnb29nbGVhcGlzLmNvbSIKfQo=
+PROJECT_ID=534521643480
+LOCATION=us-central1
+GOOGLE_CLOUD_MODEL=projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba
+
+🔧 DEPLOYMENT STEPS:
+===================
+
+STEP 1: PREPARE YOUR GEMINI API KEY
+-----------------------------------
+1. Go to https://aistudio.google.com/app/apikey
+2. Create a new API key or copy your existing one
+3. Replace "YOUR_GEMINI_API_KEY_HERE" above with your actual API key
+
+STEP 2: CREATE GITHUB REPOSITORY
+--------------------------------
+1. Go to https://github.com/new
+2. Create a new repository (e.g., "fast-translation-webapp")
+3. Make it public or private (your choice)
+4. Don't initialize with README (we already have files)
+
+STEP 3: PUSH CODE TO GITHUB
+---------------------------
+Run these commands in your webapp folder:
+
+git init
+git add .
+git commit -m "Initial commit: Fast Translation Webapp"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+git push -u origin main
+
+STEP 4: SETUP CLOUDFLARE PAGES
+------------------------------
+1. Go to https://dash.cloudflare.com/pages
+2. Click "Create a project"
+3. Click "Connect to Git"
+4. Select your GitHub repository
+5. Configure build settings:
+   - Framework preset: None
+   - Build command: pip install -r requirements.txt
+   - Build output directory: /
+   - Root directory: / (or leave empty)
+
+STEP 5: ADD ENVIRONMENT VARIABLES
+---------------------------------
+In Cloudflare Pages project settings:
+1. Go to Settings → Environment variables
+2. Add each variable from the list above:
+   - GEMINI_API_KEY: [Your Gemini API key]
+   - GOOGLE_CLOUD_CREDENTIALS: [The long base64 string above]
+   - PROJECT_ID: 534521643480
+   - LOCATION: us-central1
+   - GOOGLE_CLOUD_MODEL: projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba
+
+STEP 6: DEPLOY
+--------------
+1. Click "Save and Deploy"
+2. Wait for the build to complete (usually 2-5 minutes)
+3. Your webapp will be available at: https://YOUR_PROJECT_NAME.pages.dev
+
+🎉 CONGRATULATIONS!
+==================
+Your Fast Translation webapp is now live on Cloudflare Pages!
+
+📝 IMPORTANT NOTES:
+==================
+- The GOOGLE_CLOUD_CREDENTIALS above is already base64 encoded and ready to use
+- Make sure to replace YOUR_GEMINI_API_KEY_HERE with your actual Gemini API key
+- Keep your API keys secure and never share them publicly
+- You can update environment variables anytime in Cloudflare Pages settings
+
+🔧 TROUBLESHOOTING:
+==================
+- If build fails: Check that all environment variables are set correctly
+- If translation doesn't work: Verify your API keys and quotas
+- If UI doesn't load: Check the build logs for any errors
+
+📞 NEED HELP?
+============
+- Check the build logs in Cloudflare Pages dashboard
+- Verify all environment variables are set
+- Test your API keys separately to ensure they work
