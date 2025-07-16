@@ -1,0 +1,12 @@
+# Build configuration for Cloudflare Pages
+[build]
+  command = "pip install -r requirements-minimal.txt"
+  publish = "."
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
