@@ -48,12 +48,21 @@ logs/
 temp/
 tmp/
 
-# Credentials (security)
+# Credentials (security) - NEVER commit these!
 google-credentials.json
 google-credentials-base64.txt
+*credentials*
+*secret*
+*key*
+*.pem
+*.p12
+*.pfx
+DEPLOYMENT_CONFIG.md
+deployment-config.*
 *.json
 !package.json
 !tsconfig.json
+!manifest.json
 
 # Wrangler
 .wrangler/

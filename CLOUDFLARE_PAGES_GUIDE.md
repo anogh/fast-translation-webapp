@@ -38,22 +38,28 @@ Use these exact settings:
 Project name: fast-translation-webapp
 Production branch: main
 Framework preset: None
-Build command: pip install -r requirements.txt && python -m uvicorn main:app --host 0.0.0.0 --port 8000
+Build command: pip install -r requirements.txt
 Build output directory: (leave empty)
 Root directory: (leave empty)
 ```
 
-### **Step 5: Environment Variables**
+### **Step 5: Environment Variables Setup**
 
-In the **Environment variables** section, add these:
+**CRITICAL**: Set these in Cloudflare Pages dashboard, NOT in files!
 
-| Variable Name | Value |
-|---------------|-------|
-| `GEMINI_API_KEY` | `your_gemini_api_key_here` |
-| `GOOGLE_CLOUD_CREDENTIALS` | `your_base64_encoded_credentials` |
-| `PROJECT_ID` | `534521643480` |
-| `LOCATION` | `us-central1` |
-| `GOOGLE_CLOUD_MODEL` | `projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba` |
+1. Go to your Cloudflare Pages project
+2. Navigate to **Settings** → **Environment variables**
+3. Add these variables for both **Production** and **Preview**:
+
+```
+GEMINI_API_KEY = your_gemini_api_key_here
+PROJECT_ID = gen-lang-client-0695443309
+LOCATION = us-central1
+GOOGLE_CLOUD_MODEL = gemini-1.5-flash-002
+GOOGLE_CLOUD_CREDENTIALS = {paste your service account JSON here}
+```
+
+**⚠️ For GOOGLE_CLOUD_CREDENTIALS**: Copy the entire JSON content from your `gen-lang-client-0695443309-85a37f2c9fd6.json` file and paste it as the value (not base64 encoded).
 
 ### **Step 6: Deploy**
 

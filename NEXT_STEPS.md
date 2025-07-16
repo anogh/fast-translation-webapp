@@ -51,11 +51,15 @@ This will open GitHub and guide you through the process.
 
 ## 🔑 Environment Variables You'll Need
 
+**⚠️ SECURITY NOTE**: Set these directly in Cloudflare Pages dashboard (see `SECURITY_FIX.md`)
+
 1. **GEMINI_API_KEY** - Your Google AI API key
-2. **GOOGLE_CLOUD_CREDENTIALS** - Base64 encoded (provided in DEPLOYMENT_CONFIG.md)
+2. **GOOGLE_CLOUD_CREDENTIALS** - Your service account JSON (as text, not base64)
 3. **PROJECT_ID** - `gen-lang-client-0695443309`
 4. **LOCATION** - `us-central1`
 5. **GOOGLE_CLOUD_MODEL** - `gemini-1.5-flash-002`
+
+**NEVER commit credentials to Git!** Use Cloudflare Pages environment variables instead.
 
 ## 🎉 After Deployment
 
