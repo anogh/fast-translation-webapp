@@ -43,13 +43,24 @@ PROJECT_ID = os.environ.get("PROJECT_ID", "534521643480")
 LOCATION = os.environ.get("LOCATION", "us-central1")
 GOOGLE_CLOUD_MODEL = os.environ.get("GOOGLE_CLOUD_MODEL", "projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba")
 
-# Initialize Google Cloud Translation client
+# Initialize Google Cloud Translation client (lazy initialization)
 client = None
-if GOOGLE_CLOUD_CREDENTIALS:
+credentials_file_path = None
+
+def get_google_cloud_client():
+    """Lazy initialization of Google Cloud Translation client"""
+    global client, credentials_file_path
+    
+    if client is not None:
+        return client
+        
+    if not GOOGLE_CLOUD_CREDENTIALS:
+        print("WARNING: No Google Cloud credentials provided")
+        return None
+        
     try:
         # Handle credentials as raw JSON (not base64 encoded)
         if isinstance(GOOGLE_CLOUD_CREDENTIALS, str):
-            # Parse the JSON string directly
             credentials_data = GOOGLE_CLOUD_CREDENTIALS
         else:
             credentials_data = json.dumps(GOOGLE_CLOUD_CREDENTIALS)
@@ -57,10 +68,15 @@ if GOOGLE_CLOUD_CREDENTIALS:
         # Create temporary credentials file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write(credentials_data)
+            credentials_file_path = f.name
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+        
         client = translate.TranslationServiceClient()
+        print("INFO: Google Cloud Translation client initialized successfully")
+        return client
     except Exception as e:
-        print(f"Failed to initialize Google Cloud Translation client: {e}")
+        print(f"ERROR: Failed to initialize Google Cloud Translation client: {e}")
+        return None
 
 parent = f"projects/{PROJECT_ID}/locations/{LOCATION}"
 
@@ -226,10 +242,11 @@ async def translate_text(translation_request: TranslationRequest):
             except Exception as e:
                 print(f"Gemini translation error: {e}")
                 # Fallback to Google Cloud Translation if Gemini fails
-                if client:
+                fallback_client = get_google_cloud_client()
+                if fallback_client:
                     try:
                         print("INFO: Falling back to Google Cloud Translation API.")
-                        response = client.translate_text(
+                        response = fallback_client.translate_text(
                             request={
                                 "parent": parent,
                                 "contents": [translation_request.text],
@@ -246,10 +263,11 @@ async def translate_text(translation_request: TranslationRequest):
                 else:
                     raise HTTPException(status_code=500, detail="Translation service unavailable.")
         else:
-            if client:
+            translation_client = get_google_cloud_client()
+            if translation_client:
                 print("INFO: Using Google Cloud Translation API for translation.")
                 try:
-                    response = client.translate_text(
+                    response = translation_client.translate_text(
                         request={
                             "parent": parent,
                             "contents": [translation_request.text],
@@ -371,7 +389,15 @@ async def load_settings():
 # Health check endpoint
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy", "timestamp": "2025-01-16T02:53:30Z"}
+
+# Startup event
+@app.on_event("startup")
+async def startup_event():
+    print("INFO: Fast Translation webapp starting up...")
+    print(f"INFO: Environment variables loaded - PROJECT_ID: {PROJECT_ID}")
+    print(f"INFO: GEMINI_API_KEY configured: {'Yes' if GEMINI_API_KEY else 'No'}")
+    print(f"INFO: GOOGLE_CLOUD_CREDENTIALS configured: {'Yes' if GOOGLE_CLOUD_CREDENTIALS else 'No'}")
 
 if __name__ == "__main__":
     import uvicorn
