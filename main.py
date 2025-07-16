@@ -15,7 +15,9 @@ from pydantic import BaseModel
 import re
 from fastapi.middleware.cors import CORSMiddleware
 from google.generativeai import types
-import tempfile
+
+# Get the absolute path of the directory containing main.py
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load environment variables (for local development)
 load_dotenv()
@@ -31,11 +33,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files with absolute path
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
-# Templates
-templates = Jinja2Templates(directory="templates")
+# Templates with absolute path
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # Environment variables for Cloudflare
 GOOGLE_CLOUD_CREDENTIALS = os.environ.get("GOOGLE_CLOUD_CREDENTIALS")
@@ -46,11 +48,10 @@ GOOGLE_CLOUD_MODEL = os.environ.get("GOOGLE_CLOUD_MODEL", "projects/534521643480
 
 # Initialize Google Cloud Translation client (lazy initialization)
 client = None
-credentials_file_path = None
 
 def get_google_cloud_client():
     """Lazy initialization of Google Cloud Translation client"""
-    global client, credentials_file_path
+    global client
     
     if client is not None:
         return client
@@ -62,18 +63,16 @@ def get_google_cloud_client():
     try:
         # Handle credentials as raw JSON (not base64 encoded)
         if isinstance(GOOGLE_CLOUD_CREDENTIALS, str):
-            credentials_data = GOOGLE_CLOUD_CREDENTIALS
+            credentials_data = json.loads(GOOGLE_CLOUD_CREDENTIALS)
         else:
-            credentials_data = json.dumps(GOOGLE_CLOUD_CREDENTIALS)
+            credentials_data = GOOGLE_CLOUD_CREDENTIALS
         
-        # Create temporary credentials file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
-            f.write(credentials_data)
-            credentials_file_path = f.name
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
+        # Create credentials object directly from JSON data (no file needed)
+        credentials = service_account.Credentials.from_service_account_info(credentials_data)
         
-        client = translate.TranslationServiceClient()
-        print("INFO: Google Cloud Translation client initialized successfully")
+        # Initialize client with credentials object
+        client = translate.TranslationServiceClient(credentials=credentials)
+        print("INFO: Google Cloud Translation client initialized successfully with in-memory credentials")
         return client
     except Exception as e:
         print(f"ERROR: Failed to initialize Google Cloud Translation client: {e}")
