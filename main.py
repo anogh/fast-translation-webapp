@@ -1,28 +1,31 @@
 import os
 import json
-import base64
 import time
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, HTMLResponse
-import google.generativeai as genai
-from google.cloud import translate_v2 as translate
-from google.oauth2 import service_account
-from dotenv import load_dotenv
 from pydantic import BaseModel
 import re
 from fastapi.middleware.cors import CORSMiddleware
-from google.generativeai import types
 
 # Get the absolute path of the directory containing main.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load environment variables (for local development)
-load_dotenv()
+# Load environment variables safely
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # dotenv not available in production
 
-app = FastAPI(title="Fast Translation Webapp")
+# Create FastAPI app with minimal configuration
+app = FastAPI(
+    title="Fast Translation Webapp",
+    description="A fast translation service",
+    version="1.0.0"
+)
 
 # Enable CORS for the translation extension
 app.add_middleware(
@@ -46,6 +49,60 @@ PROJECT_ID = os.environ.get("PROJECT_ID", "534521643480")
 LOCATION = os.environ.get("LOCATION", "us-central1")
 GOOGLE_CLOUD_MODEL = os.environ.get("GOOGLE_CLOUD_MODEL", "projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba")
 
+# Lazy loading for heavy dependencies
+_genai = None
+_translate = None
+_service_account = None
+_types = None
+
+def get_genai():
+    """Lazy load Google Generative AI"""
+    global _genai
+    if _genai is None:
+        try:
+            import google.generativeai as genai
+            _genai = genai
+        except ImportError as e:
+            print(f"WARNING: Could not import google.generativeai: {e}")
+            _genai = False
+    return _genai if _genai is not False else None
+
+def get_translate():
+    """Lazy load Google Cloud Translate"""
+    global _translate
+    if _translate is None:
+        try:
+            from google.cloud import translate_v2 as translate
+            _translate = translate
+        except ImportError as e:
+            print(f"WARNING: Could not import google.cloud.translate: {e}")
+            _translate = False
+    return _translate if _translate is not False else None
+
+def get_service_account():
+    """Lazy load Google OAuth2 Service Account"""
+    global _service_account
+    if _service_account is None:
+        try:
+            from google.oauth2 import service_account
+            _service_account = service_account
+        except ImportError as e:
+            print(f"WARNING: Could not import google.oauth2.service_account: {e}")
+            _service_account = False
+    return _service_account if _service_account is not False else None
+
+def get_types():
+    """Lazy load Google Generative AI types"""
+    global _types
+    if _types is None:
+        try:
+            from google.generativeai import types
+            _types = types
+        except ImportError as e:
+            print(f"WARNING: Could not import google.generativeai.types: {e}")
+            _types = False
+    return _types if _types is not False else None
+
 # Initialize Google Cloud Translation client (lazy initialization)
 client = None
 
@@ -61,6 +118,14 @@ def get_google_cloud_client():
         return None
         
     try:
+        # Get required modules
+        translate = get_translate()
+        service_account = get_service_account()
+        
+        if not translate or not service_account:
+            print("WARNING: Required Google Cloud modules not available")
+            return None
+        
         # Handle credentials as raw JSON (not base64 encoded)
         if isinstance(GOOGLE_CLOUD_CREDENTIALS, str):
             credentials_data = json.loads(GOOGLE_CLOUD_CREDENTIALS)
@@ -163,9 +228,19 @@ async def read_root(request: Request):
         })
     except Exception as e:
         print(f"ERROR: Root endpoint error: {e}")
-        return JSONResponse(
-            status_code=500,
-            content={"error": "Internal server error", "details": str(e)}
+        # Return a simple HTML response if template fails
+        return HTMLResponse(
+            content="""
+            <html>
+                <head><title>Fast Translation Webapp</title></head>
+                <body>
+                    <h1>Fast Translation Webapp</h1>
+                    <p>Service is running but template loading failed.</p>
+                    <p>Error: """ + str(e) + """</p>
+                </body>
+            </html>
+            """,
+            status_code=200
         )
 
 @app.post("/translate")
@@ -179,6 +254,13 @@ async def translate_text(translation_request: TranslationRequest):
 
     if not translation_request.text.strip():
         raise HTTPException(status_code=400, detail="Input text cannot be empty.")
+
+    # Get required modules
+    genai = get_genai()
+    types = get_types()
+    
+    if not genai or not types:
+        raise HTTPException(status_code=500, detail="Translation services not available.")
 
     # Initialize Gemini client with the current API key
     if current_api_key:
@@ -397,10 +479,9 @@ async def load_settings():
 # Health check endpoints for Cloudflare Pages
 @app.get("/health")
 async def health_check():
-    import datetime
+    """Fast health check endpoint"""
     return {
         "status": "healthy", 
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
         "service": "fast-translation-webapp",
         "version": "1.0.0"
     }
@@ -410,24 +491,11 @@ async def ping():
     """Simple ping endpoint for load balancer health checks"""
     return {"message": "pong"}
 
-# Startup event
+# Startup event - keep it minimal for fast startup
 @app.on_event("startup")
 async def startup_event():
     print("INFO: Fast Translation webapp starting up...")
-    print(f"INFO: Environment variables loaded - PROJECT_ID: {PROJECT_ID}")
-    print(f"INFO: GEMINI_API_KEY configured: {'Yes' if GEMINI_API_KEY else 'No'}")
-    print(f"INFO: GOOGLE_CLOUD_CREDENTIALS configured: {'Yes' if GOOGLE_CLOUD_CREDENTIALS else 'No'}")
-    print(f"INFO: Server will run on port: {os.environ.get('PORT', 8000)}")
     print("INFO: Server ready to accept connections")
-
-# Add a simple middleware to log requests for debugging
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    print(f"INFO: {request.method} {request.url.path} - {response.status_code} - {process_time:.3f}s")
-    return response
 
 if __name__ == "__main__":
     import uvicorn
