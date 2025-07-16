@@ -5,7 +5,7 @@ from typing import Dict, Any, List
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 import google.generativeai as genai
 from google.cloud import translate_v2 as translate
 from google.oauth2 import service_account
@@ -47,8 +47,14 @@ GOOGLE_CLOUD_MODEL = os.environ.get("GOOGLE_CLOUD_MODEL", "projects/534521643480
 client = None
 if GOOGLE_CLOUD_CREDENTIALS:
     try:
-        # Create temporary credentials file from base64 encoded credentials
-        credentials_data = base64.b64decode(GOOGLE_CLOUD_CREDENTIALS).decode('utf-8')
+        # Handle credentials as raw JSON (not base64 encoded)
+        if isinstance(GOOGLE_CLOUD_CREDENTIALS, str):
+            # Parse the JSON string directly
+            credentials_data = GOOGLE_CLOUD_CREDENTIALS
+        else:
+            credentials_data = json.dumps(GOOGLE_CLOUD_CREDENTIALS)
+        
+        # Create temporary credentials file
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             f.write(credentials_data)
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = f.name
