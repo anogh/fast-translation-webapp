@@ -1,0 +1,62 @@
+# 🚀 Cloudflare Pages Deployment Configuration
+
+## 📋 **Your Environment Variables**
+
+Copy these exact values into Cloudflare Pages:
+
+### **GEMINI_API_KEY**
+```
+YOUR_GEMINI_API_KEY_HERE
+```
+*Get from: https://aistudio.google.com/app/apikey*
+
+### **GOOGLE_CLOUD_CREDENTIALS**
+```
+ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAiZ2VuLWxhbmctY2xpZW50LTA2OTU0NDMzMDkiLAogICJwcml2YXRlX2tleV9pZCI6ICI4NWEzN2YyYzlmZDZiMzdmMzVkMmZjNjljMGY1NTY2ZGYxMmIyOGI4IiwKICAicHJpdmF0ZV9rZXkiOiAiLS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tXG5NSUlFdlFJQkFEQU5CZ2txaGtpRzl3MEJBUUVGQUFTQ0JLY3dnZ1NqQWdFQUFvSUJBUUR6MkRCdlFSUDVJckgyXG4xR1RFenFzL2gvcVRQYk9RdENrekh6QkFHL0F3QVEwcFU1eklKY2V2WWp5clNybzViKzI3R1BuYU8zd2pMN24zXG44eTRKVncwdmZZWFBGYWFRNjVtT2pBVkt2ZHBVRjdWZUdtNktWZ1JiNXRUalZRQlJOMnNOMDg5Mk43UXZzenVXXG5hZDNjQVE3aTRmK3VJenphZDBLQWZlbkpwc2hyc25TOEZ1NmZxb1NLMnZrOE9wUUZ3ejNTSkF5b1pEWUJSRllHXG5ZN2dKZTh6QzhlNUNzWlBwUnFnc3laU3dnZUxlT2p5a2t2TldhTEU4anZSQXlyZk5FZy8rSTMvMjZiVE0wNFJWXG5wdXlkalZoeWVxZnRwMkxRRnM4cDlxcUhSR1VMZi9wYU1QU0d5NTN2U1NUMHl6RDcwOTV6UW5YdVpZUUl2amtNXG5vVk9DQXIrdkFnTUJBQUVDZ2dFQUI5Vit2TnhJNFh5cFhnWTExSkxWTXAzU1FZKythSnc1SktEUVlvYmpRUStQXG5saS9PL2lra2tMQmx4WlVKaFpYZ2U5M1NEUjVUSHloRjM3N3EwRGNCUC9EVzd5L0JZYStJQituY3M2bUV6YVhUXG5XRm9lQ2dpNGJDRnUzbnpaSFVMY0NCNHhjSmxhaXh2Rmd0QVU1aUFNaytKeDNlelk1Q1hudDR3VUNqdjIvV3EyXG53WEFMejBaWkMxL1hqdnhpN1pIbnpVam9ocXdUcEsvUVdJdnhGQ1RQUkxPSDZZWlFFOEtFRmgwVjZ1WW84YkpIXG4xY0QvcXdNMGh3aUZVcll6Vm54N1EzZEVCWWE2eUJSYjN0ZE52My90SkVWcVp6N0xsYi9ZZGZVeHh6YXVPblJIXG5NV2JKb1V5b1R5ZGNaVkoybHYyRXpHampmUUJ5MmZXWEZDb0lsZkczZlFLQmdRRC95dDgzclcrRVQ5TUxyeEd4XG43Q2FmcW1zNGNya09NQlo5Q1QzdGYzU1p3bko3Mk13em1NVFJJL0ZYR2hQL2tqS3E5aUpGbUk5SU93am1jWGx0XG5VYlYvUU5Hc28zbm4xbHp1NlVZblNaUnNiSFVnRXBVZUtxb1VOV2puNmZaeEJCVlp0WlAyN001djRsUnBtcmU0XG5VbjJ1RWFWMWVYTzJSVUc3N1ZLVUNvSjA5UUtCZ1FEMEN0WHQzVHpZdjdJSkRRT3dNYlRFck1YTkJybElNQlVaXG56N005Mm5pVzBxOG4zOTVBUklVRkdacEozcVJncTRJZno4Wm9FajdlZlhtYjJ1MFpDTW5YVTZoVjcxY3o2S1ZtXG5od3VIS1JlTFpqQjlnRmdFdjBVd2JueG56UGlxNE45MFBmOHE4VkJVNjU3aXlNd3I4amJuL0QrVE9ZNnJBRWxiXG5hWFlzRzF6Ymt3S0JnSE9JalZQWG1WUDR2Z2s3OU5FWktjVGFNMzJXaTdFMTFTSjZweWI3ZDQzdmZzZ2pmdkFiXG5JMktYU20yZUVNUlJvMk1Hc3lvZUl6RnJ3TFJkTW94RzZLUm1nWTNwZEtsYmNEUlUxdVB0M3dVdDQ2VXQzMzUxXG5wTVpsN1ZFNm9wNGZTd2x1OHpzSGNLS21acHdnVHJVSlJVejNHWFc2K3FHc0hHbW1Zck1OSUNsMUFvR0FIU29PXG5WdGJScHJXQitVTHM1ZW1LeU5ZODdUdVllT0FHSlllRXpDZUhzYjZMNENBSTEzVlkwRHMzRFF6bWFBY1hEZVl1XG50OUUyWWpCc2tBdWh1aFFxeXVqY2ZTaVZLMGJxUFU1Mk9qalc3M25PNGJDczFDUm5pRm9yMDl2Uys5alQyM2h0XG5QaHlJbFIxelozYkhyNWpLcHY2bU9sbnVpdEVGOHo2dk9LWXNlckVDZ1lFQXpUd3hRTkNFQWV0dDl1U2IyRG8xXG5QR1o5OGg1WkZuMmFpVG51Vk5SWFZMRJBRUE5jb1JkM2ZUcElpMHNXZEc3bnN3NGQ3bHlHV3h2T08vU0dTekFcbldTVTUvME1UZHRYWEU1SXViRXhKS3hGMlJ3NFdlOFltQ2FxZ09BSWhQdkp6U0dKZ2pvTkk1NW1taGlxZmZXN1Zcbjc2RVNsUUtVVWFrT1JrZVVnSWZrRnc4PVxuLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLVxuIiwKICAiY2xpZW50X2VtYWlsIjogImZvci1hbWF6b24td29ya0BnZW4tbGFuZy1jbGllbnQtMDY5NTQ0MzMwOS5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsCiAgImNsaWVudF9pZCI6ICIxMDI0Nzc0Mzc2MDU2MTQwNzg2MTIiLAogICJhdXRoX3VyaSI6ICJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aCIsCiAgInRva2VuX3VyaSI6ICJodHRwczovL29hdXRoMi5nb29nbGVhcGlzLmNvbS90b2tlbiIsCiAgImF1dGhfcHJvdmlkZXJfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9vYXV0aDIvdjEvY2VydHMiLAogICJjbGllbnRfeDUwOV9jZXJ0X3VybCI6ICJodHRwczovL3d3dy5nb29nbGVhcGlzLmNvbS9yb2JvdC92MS9tZXRhZGF0YS94NTA5L2Zvci1hbWF6b24td29yayU0MGdlbi1sYW5nLWNsaWVudC0wNjk1NDQzMzA5LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwKICAidW5pdmVyc2VfZG9tYWluIjogImdvb2dsZWFwaXMuY29tIgp9Cg==
+```
+
+### **PROJECT_ID**
+```
+534521643480
+```
+
+### **LOCATION**
+```
+us-central1
+```
+
+### **GOOGLE_CLOUD_MODEL**
+```
+projects/534521643480/locations/us-central1/models/NM3ad0dd20ffa743ba
+```
+
+## 🔧 **Build Configuration**
+
+Use these settings in Cloudflare Pages:
+
+```
+Framework preset: None
+Build command: pip install -r requirements.txt && python -m uvicorn main:app --host 0.0.0.0 --port 8000
+Build output directory: (leave empty)
+Root directory: (leave empty)
+```
+
+## 🚀 **Deployment Steps**
+
+1. **Create GitHub repository**: https://github.com/new
+2. **Push your code**:
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/fast-translation-webapp.git
+   git push -u origin main
+   ```
+3. **Go to Cloudflare Pages**: https://dash.cloudflare.com/pages
+4. **Connect your GitHub repository**
+5. **Use the build configuration above**
+6. **Add all environment variables**
+7. **Deploy!**
+
+Your app will be available at: `https://fast-translation-webapp.pages.dev`
+
+---
+
+**🎉 Ready to deploy? Follow the steps in CLOUDFLARE_PAGES_GUIDE.md!**
