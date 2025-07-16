@@ -1,6 +1,7 @@
 import os
 import json
 import base64
+import time
 from typing import Dict, Any, List
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
@@ -152,13 +153,21 @@ class TranslationRequest(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "general_prompt": general_prompt_cache,
-        "ai_mode_enabled": dictionaries_cache["settings"].get("ai_mode_enabled", False),
-        "api_keys": dictionaries_cache["settings"].get("api_keys", []),
-        "model_names": dictionaries_cache["settings"].get("model_names", [])
-    })
+    """Root endpoint that serves the main application and acts as a health check"""
+    try:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "general_prompt": general_prompt_cache,
+            "ai_mode_enabled": dictionaries_cache["settings"].get("ai_mode_enabled", False),
+            "api_keys": dictionaries_cache["settings"].get("api_keys", []),
+            "model_names": dictionaries_cache["settings"].get("model_names", [])
+        })
+    except Exception as e:
+        print(f"ERROR: Root endpoint error: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Internal server error", "details": str(e)}
+        )
 
 @app.post("/translate")
 async def translate_text(translation_request: TranslationRequest):
@@ -386,10 +395,21 @@ async def load_settings():
         "current_model_name": settings.get("current_model_name", "")
     }
 
-# Health check endpoint
+# Health check endpoints for Cloudflare Pages
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": "2025-01-16T02:53:30Z"}
+    import datetime
+    return {
+        "status": "healthy", 
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "service": "fast-translation-webapp",
+        "version": "1.0.0"
+    }
+
+@app.get("/ping")
+async def ping():
+    """Simple ping endpoint for load balancer health checks"""
+    return {"message": "pong"}
 
 # Startup event
 @app.on_event("startup")
@@ -398,7 +418,24 @@ async def startup_event():
     print(f"INFO: Environment variables loaded - PROJECT_ID: {PROJECT_ID}")
     print(f"INFO: GEMINI_API_KEY configured: {'Yes' if GEMINI_API_KEY else 'No'}")
     print(f"INFO: GOOGLE_CLOUD_CREDENTIALS configured: {'Yes' if GOOGLE_CLOUD_CREDENTIALS else 'No'}")
+    print(f"INFO: Server will run on port: {os.environ.get('PORT', 8000)}")
+    print("INFO: Server ready to accept connections")
+
+# Add a simple middleware to log requests for debugging
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    print(f"INFO: {request.method} {request.url.path} - {response.status_code} - {process_time:.3f}s")
+    return response
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        app, 
+        host="0.0.0.0", 
+        port=int(os.environ.get("PORT", 8000)),
+        timeout_keep_alive=30,
+        timeout_graceful_shutdown=10
+    )
